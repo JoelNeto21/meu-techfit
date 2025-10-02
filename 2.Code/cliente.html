@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFit - Área do Cliente</title>
+    <link rel="icon" type="image/png" href="img/meuTechFit-fav.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #app {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #0500ff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0300b3;
+        }
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #0500ff;
+            border: 1px solid #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+            color: #0300b3;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+        }
+        .success-message {
+            background-color: #e0e7ff;
+            color: #0500ff;
+            border-left: 4px solid #0500ff;
+        }
+        .error-message {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .nav-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        /* Consolidado nav-btn e nav-btn::after */
+        .nav-btn {
+            padding: 16px 24px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            min-width: 0;
+        }
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #9ca3af;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .nav-btn.active::after {
+            background-color: #0500ff;
+            transform: scaleX(1);
+        }
+        .nav-btn:hover::after {
+            transform: scaleX(1);
+        }
+        .nav-btn.active {
+            color: #0500ff;
+        }
+        .nav-btn:not(.active) {
+            color: #64748b;
+        }
+        .nav-btn:not(.active):hover {
+            color: #64748b;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+        .logo-section img {
+            max-height: 40px;
+        }
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .menu-container {
+            position: relative;
+        }
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .menu-btn:hover {
+            background-color: #f1f5f9;
+        }
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            /* margin-top removido para corrigir sintaxe */
+        }
+        .menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            margin: 4px;
+        }
+        .menu-item:first-child {
+            margin-top: 8px;
+        }
+        .menu-item:last-child {
+            margin-bottom: 8px;
+        }
+        .menu-item:hover {
+            background-color: #f1f5f9;
+            color: #0500ff;
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="app">
+        <!-- Header estilo Brilliant -->
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="img/meuTechFit-logo.png" alt="TechFit">
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-btn active" data-section="home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-btn" data-section="aulas">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Aulas</span>
+                </div>
+            </div>
+            
+            <div class="menu-container">
+                <button class="menu-btn" id="menu-toggle">
+                    <i class="fas fa-bars text-gray-600"></i>
+                </button>
+                <div class="menu-dropdown" id="menu-dropdown">
+                    <a href="index.html" class="menu-item">
+                        <i class="fas fa-home"></i>
+                        <span>Voltar ao Site</span>
+                    </a>
+                    <a href="admin.html" class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Acesso Admin</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content px-4">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <!-- Título e subtítulo centralizados -->
+                <div class="text-center mb-8">
+                    <h1 class="page-title">Área do Cliente</h1>
+                    <p class="page-subtitle">Gerencie seus treinos e acompanhe seu progresso</p>
+                </div>
+            </div>
+
+            <!-- MENSAGENS -->
+            <div id="message-container" class="mb-6 hidden">
+                <div id="message-text" class="p-4 rounded-md"></div>
+            </div>
+
+            <!-- SEÇÃO HOME -->
+            <div id="section-home" class="section active">
+                <!-- Bem-vindo e insights -->
+                <div class="mb-6 text-center">
+                    <!-- Ícone e frase removidos -->
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="text-center p-6 bg-blue-50 rounded-lg">
+                        <i class="fas fa-calendar-check text-3xl text-blue-600 mb-3"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Aulas Agendadas</h3>
+                        <p class="text-2xl font-bold text-blue-600" id="scheduled-count">0</p>
+                    </div>
+                    <div class="text-center p-6 bg-green-50 rounded-lg">
+                        <i class="fas fa-fire text-3xl text-green-600 mb-3"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Treinos desta Semana</h3>
+                        <p class="text-2xl font-bold text-green-600">4</p>
+                    </div>
+                    <div class="text-center p-6 bg-purple-50 rounded-lg">
+                        <i class="fas fa-trophy text-3xl text-purple-600 mb-3"></i>
+                        <h3 class="font-bold text-gray-800 mb-2">Meta do Mês</h3>
+                        <p class="text-2xl font-bold text-purple-600">16/20</p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                        Dica do Dia
+                    </h3>
+                    <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-700 bg-white py-3">
+                        💧 Lembre-se de se hidratar bem antes, durante e após os treinos. Beba pelo menos 500ml de água 2 horas antes da atividade física!
+                    </blockquote>
+                </div>
+                <!-- Calendário e menu de eventos -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Calendário -->
+                    <div class="md:col-span-2 card p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h2 id="calendar-month" class="text-xl font-bold text-gray-800"></h2>
+                            <div class="flex gap-2">
+                                <button id="prev-month" class="btn btn-secondary p-2"><i class="fas fa-chevron-left"></i></button>
+                                <button id="next-month" class="btn btn-secondary p-2"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1 text-center text-gray-500 text-xs mb-1">
+                            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                    </div>
+                    <!-- Descrição do evento do dia selecionado -->
+                    <div class="card p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">Evento do Dia</h3>
+                            <div id="event-description" class="text-gray-600">Selecione um dia com evento para ver detalhes.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO AULAS -->
+            <div id="section-aulas" class="section">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">
+                        <i class="fas fa-user-friends text-blue-600 mr-2"></i>
+                        Aulas Disponíveis
+                    </h2>
+                    <p class="text-gray-600 text-center">Escolha suas aulas e faça seu agendamento</p>
+                </div>
+                
+                <div id="class-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Aulas serão renderizadas aqui pelo JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agendamento -->
+    <div id="booking-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 hidden">
+        <div class="modal-content p-6 max-w-sm w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-lg font-bold text-gray-900"></h3>
+                <button id="close-modal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <p id="modal-details" class="text-sm text-gray-600 mb-4"></p>
+            <button id="confirm-booking-btn" class="w-full btn btn-primary mb-2">Agendar</button>
+            <button id="cancel-booking-btn" class="w-full btn btn-secondary">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializa dados padrão se não existirem
+            const initializeDefaultClasses = () => {
+                const defaultClasses = [
+                    { id: 1, name: 'Yoga Matinal', instructor: 'Ana Santos', time: '08:00', capacity: 15, booked: 5 },
+                    { id: 2, name: 'Zumba Fitness', instructor: 'Pedro Rocha', time: '09:00', capacity: 20, booked: 18 },
+                    { id: 3, name: 'Spinning Intenso', instructor: 'Maria Costa', time: '18:30', capacity: 10, booked: 10 },
+                    { id: 4, name: 'Musculação', instructor: 'João Silva', time: '19:00', capacity: 30, booked: 25 },
+                    { id: 5, name: 'Pilates', instructor: 'Carla Mendes', time: '20:00', capacity: 12, booked: 8 },
+                ];
+                
+                if (!localStorage.getItem('techfitClasses')) {
+                    localStorage.setItem('techfitClasses', JSON.stringify(defaultClasses));
+                }
+                
+                return JSON.parse(localStorage.getItem('techfitClasses'));
+            };
+
+            // Carrega dados do localStorage (compatível com área administrativa)
+            let classes = initializeDefaultClasses();
+            
+            // UI elements
+            const classListEl = document.getElementById('class-list');
+            const messageContainer = document.getElementById('message-container');
+            const messageText = document.getElementById('message-text');
+            
+            // Navigation elements
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.section');
+            
+            // Menu dropdown elements
+            const menuToggle = document.getElementById('menu-toggle');
+            const menuDropdown = document.getElementById('menu-dropdown');
+            
+            // Modal elements
+            const bookingModal = document.getElementById('booking-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDetails = document.getElementById('modal-details');
+            const confirmBookingBtn = document.getElementById('confirm-booking-btn');
+            const cancelBookingBtn = document.getElementById('cancel-booking-btn');
+            const closeModalBtn = document.getElementById('close-modal');
+
+            // Navegação entre seções
+            const switchSection = (sectionName) => {
+                // Atualizar botões de navegação
+                navBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+                
+                // Atualizar seções
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById(`section-${sectionName}`).classList.add('active');
+                
+                // Atualizar dados específicos da seção
+                if (sectionName === 'aulas') {
+                    renderClasses();
+                } else if (sectionName === 'home') {
+                    updateHomeStats();
+                }
+            };
+
+            // Event listeners para navegação
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchSection(btn.dataset.section);
+                });
+            });
+
+            // Menu dropdown functionality
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menuDropdown.classList.toggle('show');
+            });
+
+            // Fechar menu ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!menuDropdown.contains(e.target) && !menuToggle.contains(e.target)) {
+                    menuDropdown.classList.remove('show');
+                }
+            });
+
+            // Fechar menu ao pressionar ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    menuDropdown.classList.remove('show');
+                }
+            });
+
+            // Atualizar estatísticas da home
+            const updateHomeStats = () => {
+                const totalBooked = classes.reduce((sum, cls) => sum + cls.booked, 0);
+                const scheduledCount = document.getElementById('scheduled-count');
+                if (scheduledCount) {
+                    scheduledCount.textContent = totalBooked;
+                }
+            };
+
+            // Salva dados no localStorage (mantém compatibilidade)
+            const saveClasses = () => {
+                localStorage.setItem('techfitClasses', JSON.stringify(classes));
+            };
+
+            // Recarrega dados do localStorage (para sincronizar com admin)
+            const reloadClasses = () => {
+                classes = JSON.parse(localStorage.getItem('techfitClasses')) || [];
+                renderClasses();
+                updateHomeStats();
+            };
+
+            // Exibe mensagens de notificação
+            const showMessage = (text, type = 'success') => {
+                messageText.textContent = text;
+                messageContainer.classList.remove('hidden', 'success-message', 'error-message');
+                if (type === 'success') {
+                    messageContainer.classList.add('success-message');
+                } else {
+                    messageContainer.classList.add('error-message');
+                }
+                setTimeout(() => {
+                    messageContainer.classList.add('hidden');
+                }, 3000);
+            };
+
+            // Renderiza as aulas para o cliente
+            const renderClasses = () => {
+                classListEl.innerHTML = '';
+                
+                if (classes.length === 0) {
+                    classListEl.innerHTML = '<div class="col-span-full text-center text-gray-500 p-8">Nenhuma aula disponível no momento.</div>';
+                    return;
+                }
+
+                classes.forEach(cls => {
+                    const isFull = cls.booked >= cls.capacity;
+                    const card = document.createElement('div');
+                    card.classList.add('card', 'p-6', 'flex', 'flex-col', 'justify-between', 'shadow-sm', 'hover:shadow-lg', 'transition-shadow');
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-xl font-bold text-gray-800">${cls.name}</h3>
+                                <span class="text-lg font-bold text-blue-600">${cls.time}</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-2">
+                                <i class="fas fa-user mr-1"></i>
+                                Instrutor: ${cls.instructor}
+                            </p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-gray-700 text-sm">
+                                    <i class="fas fa-users mr-1"></i>
+                                    ${cls.booked}/${cls.capacity} vagas
+                                </span>
+                                <div class="w-full max-w-[100px] bg-gray-200 rounded-full h-2 ml-3">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: ${(cls.booked / cls.capacity) * 100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button data-id="${cls.id}" class="btn btn-primary mt-4 ${isFull ? 'opacity-50 cursor-not-allowed' : ''}" ${isFull ? 'disabled' : ''}>
+                            <i class="fas ${isFull ? 'fa-times' : 'fa-plus'} mr-2"></i>
+                            ${isFull ? 'Aula Lotada' : 'Agendar Aula'}
+                        </button>
+                    `;
+                    classListEl.appendChild(card);
+                });
+            };
+
+            // Lidar com o agendamento
+            const handleBooking = (e) => {
+                if (e.target.closest('button[data-id]') && !e.target.disabled) {
+                    const classId = parseInt(e.target.closest('button[data-id]').dataset.id);
+                    const classToBook = classes.find(cls => cls.id === classId);
+
+                    if (classToBook) {
+                        modalTitle.textContent = `Agendar ${classToBook.name}`;
+                        modalDetails.textContent = `Instrutor: ${classToBook.instructor} | Horário: ${classToBook.time}`;
+                        bookingModal.dataset.id = classId;
+                        bookingModal.classList.remove('hidden');
+                    }
+                }
+            };
+            
+            // Confirma o agendamento
+            const confirmBooking = () => {
+                const classId = parseInt(bookingModal.dataset.id);
+                const classToBook = classes.find(cls => cls.id === classId);
+                
+                if (classToBook && classToBook.booked < classToBook.capacity) {
+                    classToBook.booked++;
+                    saveClasses();
+                    renderClasses();
+                    updateHomeStats();
+                    showMessage(`Aula "${classToBook.name}" agendada com sucesso! 🎉`);
+                } else {
+                    showMessage('Não foi possível agendar. A aula está lotada.', 'error');
+                }
+                bookingModal.classList.add('hidden');
+            };
+
+            // Calendário Home
+            const calendarEvents = [
+                { date: '2025-10-03', title: 'Aula de Yoga', description: 'Aula de Yoga com Ana às 08:00.' },
+                { date: '2025-10-05', title: 'Spinning', description: 'Spinning com Maria às 18:30.' },
+                { date: '2025-10-10', title: 'Musculação', description: 'Musculação com João às 19:00.' },
+                { date: '2025-10-15', title: 'Pilates', description: 'Pilates com Carla às 20:00.' }
+            ];
+            let calendarDate = new Date();
+            let selectedEvent = null;
+            function renderCalendar() {
+                const year = calendarDate.getFullYear();
+                const month = calendarDate.getMonth();
+                const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+                document.getElementById('calendar-month').textContent = `${monthNames[month]} ${year}`;
+                const firstDay = new Date(year, month, 1);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                const calendarGrid = document.getElementById('calendar-grid');
+                calendarGrid.innerHTML = '';
+                for (let i = 0; i < 42; i++) {
+                    const date = new Date(startDate);
+                    date.setDate(date.getDate() + i);
+                    const isCurrentMonth = date.getMonth() === month;
+                    const isToday = date.toDateString() === new Date().toDateString();
+                    const dateStr = date.toISOString().split('T')[0];
+                    const events = calendarEvents.filter(ev => ev.date === dateStr);
+                    const dayEl = document.createElement('div');
+                    dayEl.className = `relative p-2 text-center text-xs rounded-lg cursor-pointer transition-all duration-150 flex items-start justify-center ${isCurrentMonth ? 'bg-white hover:bg-gray-100' : 'bg-gray-100 text-gray-300'} ${isToday ? 'border-2 border-blue-500 font-bold' : ''}`;
+                    // Número do dia
+                    const numEl = document.createElement('span');
+                    numEl.textContent = date.getDate();
+                    numEl.className = 'z-10';
+                    dayEl.appendChild(numEl);
+                    // Bolinhas de eventos no canto superior direito
+                    if (events.length > 0) {
+                        const dotsContainer = document.createElement('div');
+                        dotsContainer.className = 'absolute top-1 right-1 flex flex-row gap-1';
+                        events.forEach((ev, idx) => {
+                            const colors = ['bg-blue-500','bg-green-500','bg-orange-400','bg-red-500'];
+                            const dot = document.createElement('span');
+                            dot.className = `w-2 h-2 rounded-full ${colors[idx % colors.length]}`;
+                            dotsContainer.appendChild(dot);
+                        });
+                        dayEl.appendChild(dotsContainer);
+                    }
+                    // Permitir selecionar qualquer data
+                    dayEl.addEventListener('click', () => {
+                        selectedEvent = events.length > 0 ? events[0] : { title: '', description: '', date: dateStr };
+                        renderEventDescription(dateStr);
+                        document.querySelectorAll('#calendar-grid > div').forEach(el => el.classList.remove('ring-2','ring-blue-500'));
+                        dayEl.classList.add('ring-2','ring-blue-500');
+                    });
+                    calendarGrid.appendChild(dayEl);
+                }
+            }
+            function renderEventDescription(dateStr) {
+                const descEl = document.getElementById('event-description');
+                if (selectedEvent && selectedEvent.title) {
+                    descEl.innerHTML = `<strong>${selectedEvent.title}</strong><br>${selectedEvent.description}`;
+                } else {
+                    // Mostra a data selecionada
+                    const [ano, mes, dia] = dateStr.split('-');
+                    descEl.innerHTML = `<strong>Sem evento</strong><br>Data selecionada: ${dia}/${mes}/${ano}`;
+                }
+            }
+            document.getElementById('prev-month').addEventListener('click', () => {
+                calendarDate.setMonth(calendarDate.getMonth() - 1);
+                renderCalendar();
+                renderEventDescription();
+            });
+            document.getElementById('next-month').addEventListener('click', () => {
+                calendarDate.setMonth(calendarDate.getMonth() + 1);
+                renderCalendar();
+                renderEventDescription();
+            });
+            renderCalendar();
+            renderEventDescription();
+
+            // Event Listeners
+            document.addEventListener('click', handleBooking);
+            confirmBookingBtn.addEventListener('click', confirmBooking);
+            cancelBookingBtn.addEventListener('click', () => bookingModal.classList.add('hidden'));
+            closeModalBtn.addEventListener('click', () => bookingModal.classList.add('hidden'));
+
+            // Fechar modal clicando fora
+            bookingModal.addEventListener('click', (e) => {
+                if (e.target === bookingModal) {
+                    bookingModal.classList.add('hidden');
+                }
+            });
+
+            // Listener para mudanças no localStorage (para sincronizar com admin)
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'techfitClasses') {
+                    reloadClasses();
+                }
+            });
+
+            // Recarrega dados periodicamente para sincronizar
+            setInterval(() => {
+                const currentData = JSON.parse(localStorage.getItem('techfitClasses') || '[]');
+                if (JSON.stringify(currentData) !== JSON.stringify(classes)) {
+                    classes = currentData;
+                    renderClasses();
+                    updateHomeStats();
+                }
+            }, 2000);
+
+            // Inicia a aplicação
+            updateHomeStats();
+            renderClasses();
+        });
+    </script>
+
+    <footer class="w-full mt-12 py-6 bg-white border-t border-gray-200 text-center text-sm text-gray-500">
+        &copy; 2025 TechFit. Todos os direitos reservados.
+    </footer>
+</body>
+</html>

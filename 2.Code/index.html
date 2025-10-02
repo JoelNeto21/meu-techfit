@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechFit - Agendamento Online</title>
-    <link rel="icon" type="image/png" href="meuTechFit-fav.png">
+    <title>TechFit - Portal de Acesso</title>
+    <link rel="icon" type="image/png" href="img/meuTechFit-fav.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-        .container {
-            max-width: 900px;
+                background: #e3e3de;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .card {
             background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         .btn {
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
             font-weight: 600;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         .btn-primary {
             background-color: #0500ff;
@@ -33,300 +36,93 @@
         }
         .btn-primary:hover {
             background-color: #0300b3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(5, 0, 255, 0.3);
         }
         .btn-secondary {
-            background-color: #f3f4f6;
+            background-color: #f8fafc;
             color: #0500ff;
-            border: 1px solid #d1d5db;
+            border: 2px solid #0500ff;
         }
         .btn-secondary:hover {
-            background-color: #e5e7eb;
-            color: #0300b3;
+            background-color: #0500ff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(5, 0, 255, 0.3);
         }
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 50;
+        .btn-google {
+            transition: all 0.3s ease;
         }
-        .modal-content {
-            background-color: white;
-            border-radius: 12px;
+        .btn-google:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(5, 0, 255, 0.15);
         }
-        .success-message {
-            background-color: #e0e7ff;
-            color: #0500ff;
-            border-left: 4px solid #0500ff;
+        .logo {
+            max-width: 280px;
+            height: auto;
         }
-        .error-message {
-            background-color: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
-        }
-    </style>
+        .shadow-diagonal {
+        /* sombra diagonal removida */
+    body {
+        position: relative;
+    }
+    /* ...existing code... */
+</style>
 </head>
-<body class="p-4 md:p-8">
-
-    <div id="app" class="container mx-auto">
-        <header class="text-center mb-10">
-            <img src="meuTechFit-logo.png" alt="TechFit" class="mx-auto mb-6" style="max-width: 320px;">
-            <p class="text-lg text-gray-600">Seu portal de agendamento de aulas</p>
-        </header>
-
-        <!-- Seletor de visualização -->
-        <div class="mb-6 flex justify-center space-x-4">
-            <button id="view-aluno" class="btn btn-primary">Área do Aluno</button>
-            <button id="view-admin" class="btn btn-secondary">Área Administrativa</button>
-        </div>
-
-        <!-- MENSAGENS -->
-        <div id="message-container" class="mb-6 hidden">
-            <div id="message-text" class="p-4 rounded-md"></div>
-        </div>
-
-        <!-- ÁREA DO ALUNO -->
-        <div id="aluno-view" class="space-y-6">
-            <h2 class="text-2xl font-semibold text-center mb-4">Aulas Disponíveis</h2>
-            <div id="class-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Aulas serão renderizadas aqui pelo JavaScript -->
-            </div>
-        </div>
-
-        <!-- ÁREA ADMINISTRATIVA -->
-        <div id="admin-view" class="hidden space-y-6">
-            <h2 class="text-2xl font-semibold text-center mb-4">Painel Administrativo</h2>
-            
-            <div class="card p-6">
-                <h3 class="text-xl font-semibold mb-4">Adicionar Nova Aula</h3>
-                <form id="add-class-form" class="space-y-4">
-                    <div>
-                        <label for="admin-class-name" class="block text-sm font-medium text-gray-700">Nome da Aula</label>
-                        <input type="text" id="admin-class-name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required>
-                    </div>
-                    <div>
-                        <label for="admin-class-instructor" class="block text-sm font-medium text-gray-700">Instrutor</label>
-                        <input type="text" id="admin-class-instructor" name="instructor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required>
-                    </div>
-                    <div>
-                        <label for="admin-class-time" class="block text-sm font-medium text-gray-700">Horário</label>
-                        <input type="time" id="admin-class-time" name="time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required>
-                    </div>
-                    <div>
-                        <label for="admin-class-capacity" class="block text-sm font-medium text-gray-700">Capacidade Máxima</label>
-                        <input type="number" id="admin-class-capacity" name="capacity" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500" required min="1">
-                    </div>
-                    <button type="submit" class="w-full btn btn-primary">Adicionar Aula</button>
-                </form>
-            </div>
-            
-            <div class="card p-6">
-                <h3 class="text-xl font-semibold mb-4">Gerenciar Aulas</h3>
-                <div id="admin-class-list" class="space-y-4">
-                    <!-- Aulas serão renderizadas aqui para gerenciamento -->
+<body>
+    <!-- sombra diagonal removida -->
+    <div class="container mx-auto p-4" style="position: relative; z-index: 1;">
+        <div class="card p-10 max-w-md mx-auto text-center">
+            <img src="img/meuTechFit-logo.png" alt="Logo" class="logo mx-auto mb-6">
+            <p class="text-base text-gray-700 mb-6">Entre com seu melhor email para acessar o app</p>
+            <form id="loginForm" class="space-y-4">
+                <input type="text" id="username" name="username" class="w-full px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Usuário" required>
+                <input type="password" id="password" name="password" class="w-full px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Senha" required>
+                <button type="submit" class="btn btn-primary w-full">Entrar com e-mail</button>
+                <div class="flex items-center justify-center my-2">
+                    <span class="text-gray-400 text-sm">ou continue com</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para agendamento -->
-    <div id="booking-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4 hidden">
-        <div class="modal-content p-6 max-w-sm w-full">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-title" class="text-lg font-bold text-gray-900"></h3>
-                <button id="close-modal" class="text-gray-400 hover:text-gray-600 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                <button type="button" class="btn-google w-full flex items-center justify-center border rounded-lg py-2 bg-gray-100 hover:bg-gray-200 mb-2" disabled>
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-6 h-6 mr-2"> Google
                 </button>
-            </div>
-            <p id="modal-details" class="text-sm text-gray-600 mb-4"></p>
-            <button id="confirm-booking-btn" class="w-full btn btn-primary mb-2">Agendar</button>
-            <button id="cancel-booking-btn" class="w-full btn btn-secondary">Cancelar</button>
+                <div class="flex items-center mt-2">
+                    <input type="checkbox" id="termos" class="mr-2">
+                    <div class="text-xs text-gray-600 text-left">
+                        Eu li e concordo com os <a href="#" class="font-bold">Termos de Serviço</a> e <a href="#" class="font-bold">Políticas de Privacidade</a> aplicados a esta página
+                    </div>
+                </div>
+                <div id="loginError" class="text-red-500 text-sm mt-2 hidden"></div>
+            </form>
+            <!-- <div class="mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-500">
+                    Sistema de gerenciamento por perfil<br>
+                    &copy;TechFit - Version 1.0
+                </p>
+            </div> -->
         </div>
     </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Dados simulados para o protótipo
-            let classes = JSON.parse(localStorage.getItem('techfitClasses')) || [
-                { id: 1, name: 'Yoga', instructor: 'Ana Santos', time: '08:00', capacity: 15, booked: 5 },
-                { id: 2, name: 'Zumba', instructor: 'Pedro Rocha', time: '09:00', capacity: 20, booked: 18 },
-                { id: 3, name: 'Spinning', instructor: 'Maria Costa', time: '18:30', capacity: 10, booked: 10 },
-                { id: 4, name: 'Musculação', instructor: 'João Silva', time: '19:00', capacity: 30, booked: 25 },
-            ];
-            
-            // UI elements
-            const classListEl = document.getElementById('class-list');
-            const adminClassListEl = document.getElementById('admin-class-list');
-            const addClassForm = document.getElementById('add-class-form');
-            const alunoView = document.getElementById('aluno-view');
-            const adminView = document.getElementById('admin-view');
-            const viewAlunoBtn = document.getElementById('view-aluno');
-            const viewAdminBtn = document.getElementById('view-admin');
-            const messageContainer = document.getElementById('message-container');
-            const messageText = document.getElementById('message-text');
-            
-            // Modal elements
-            const bookingModal = document.getElementById('booking-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalDetails = document.getElementById('modal-details');
-            const confirmBookingBtn = document.getElementById('confirm-booking-btn');
-            const cancelBookingBtn = document.getElementById('cancel-booking-btn');
-            const closeModalBtn = document.getElementById('close-modal');
-
-            // Salva dados no localStorage
-            const saveClasses = () => {
-                localStorage.setItem('techfitClasses', JSON.stringify(classes));
-            };
-
-            // Exibe mensagens de notificação
-            const showMessage = (text, type = 'success') => {
-                messageText.textContent = text;
-                messageContainer.classList.remove('hidden', 'success-message', 'error-message');
-                if (type === 'success') {
-                    messageContainer.classList.add('success-message');
-                } else {
-                    messageContainer.classList.add('error-message');
-                }
-                setTimeout(() => {
-                    messageContainer.classList.add('hidden');
-                }, 3000);
-            };
-
-            // Renderiza as aulas para o aluno
-            const renderClasses = () => {
-                classListEl.innerHTML = '';
-                classes.forEach(cls => {
-                    const isFull = cls.booked >= cls.capacity;
-                    const card = document.createElement('div');
-                    card.classList.add('card', 'p-6', 'flex', 'flex-col', 'justify-between', 'shadow-sm');
-                    card.innerHTML = `
-                        <div>
-                            <h3 class="text-xl font-bold mb-1">${cls.name}</h3>
-                            <p class="text-gray-500 text-sm mb-2">Instrutor: ${cls.instructor}</p>
-                            <p class="text-gray-500 text-sm mb-4">Horário: ${cls.time}</p>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700 text-sm">Vagas: ${cls.booked}/${cls.capacity}</span>
-                            <button data-id="${cls.id}" class="btn btn-primary ${isFull ? 'opacity-50 cursor-not-allowed' : ''}" ${isFull ? 'disabled' : ''}>${isFull ? 'Lotada' : 'Agendar'}</button>
-                        </div>
-                    `;
-                    classListEl.appendChild(card);
-                });
-            };
-
-            // Renderiza as aulas para o administrador
-            const renderAdminClasses = () => {
-                adminClassListEl.innerHTML = '';
-                classes.forEach(cls => {
-                    const card = document.createElement('div');
-                    card.classList.add('card', 'p-4', 'flex', 'items-center', 'justify-between', 'shadow-sm');
-                    card.innerHTML = `
-                        <div>
-                            <h4 class="text-base font-semibold">${cls.name} - ${cls.time}</h4>
-                            <p class="text-sm text-gray-500">Vagas: ${cls.booked}/${cls.capacity}</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button data-id="${cls.id}" class="btn btn-secondary text-red-500 hover:text-red-700 delete-btn">Excluir</button>
-                        </div>
-                    `;
-                    adminClassListEl.appendChild(card);
-                });
-            };
-            
-            // Alterna entre as visualizações
-            const switchView = (view) => {
-                if (view === 'aluno') {
-                    alunoView.classList.remove('hidden');
-                    adminView.classList.add('hidden');
-                    viewAlunoBtn.classList.remove('btn-secondary');
-                    viewAlunoBtn.classList.add('btn-primary');
-                    viewAdminBtn.classList.remove('btn-primary');
-                    viewAdminBtn.classList.add('btn-secondary');
-                    renderClasses();
-                } else {
-                    alunoView.classList.add('hidden');
-                    adminView.classList.remove('hidden');
-                    viewAlunoBtn.classList.remove('btn-primary');
-                    viewAlunoBtn.classList.add('btn-secondary');
-                    viewAdminBtn.classList.remove('btn-secondary');
-                    viewAdminBtn.classList.add('btn-primary');
-                    renderAdminClasses();
-                }
-            };
-
-            // Lidar com o agendamento
-            const handleBooking = (e) => {
-                if (e.target.tagName === 'BUTTON' && e.target.textContent === 'Agendar') {
-                    const classId = parseInt(e.target.dataset.id);
-                    const classToBook = classes.find(cls => cls.id === classId);
-
-                    if (classToBook) {
-                        modalTitle.textContent = `Agendar ${classToBook.name}`;
-                        modalDetails.textContent = `Instrutor: ${classToBook.instructor}, Horário: ${classToBook.time}`;
-                        bookingModal.dataset.id = classId;
-                        bookingModal.classList.remove('hidden');
-                    }
-                }
-            };
-            
-            // Confirma o agendamento
-            const confirmBooking = () => {
-                const classId = parseInt(bookingModal.dataset.id);
-                const classToBook = classes.find(cls => cls.id === classId);
-                
-                if (classToBook && classToBook.booked < classToBook.capacity) {
-                    classToBook.booked++;
-                    saveClasses();
-                    renderClasses();
-                    showMessage('Aula agendada com sucesso!');
-                } else {
-                    showMessage('Não foi possível agendar. A aula está lotada.', 'error');
-                }
-                bookingModal.classList.add('hidden');
-            };
-
-            // Adiciona nova aula (Admin)
-            addClassForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const newClass = {
-                    id: classes.length > 0 ? Math.max(...classes.map(c => c.id)) + 1 : 1,
-                    name: document.getElementById('admin-class-name').value,
-                    instructor: document.getElementById('admin-class-instructor').value,
-                    time: document.getElementById('admin-class-time').value,
-                    capacity: parseInt(document.getElementById('admin-class-capacity').value),
-                    booked: 0
-                };
-                classes.push(newClass);
-                saveClasses();
-                addClassForm.reset();
-                renderAdminClasses();
-                showMessage('Aula adicionada com sucesso!');
-            });
-            
-            // Lidar com a exclusão de aulas (Admin)
-            adminClassListEl.addEventListener('click', (e) => {
-                if (e.target.classList.contains('delete-btn')) {
-                    const classId = parseInt(e.target.dataset.id);
-                    classes = classes.filter(cls => cls.id !== classId);
-                    saveClasses();
-                    renderAdminClasses();
-                    showMessage('Aula excluída com sucesso!', 'error');
-                }
-            });
-
-            // Event Listeners para botões de visualização
-            viewAlunoBtn.addEventListener('click', () => switchView('aluno'));
-            viewAdminBtn.addEventListener('click', () => switchView('admin'));
-
-            // Event Listeners para o modal
-            classListEl.addEventListener('click', handleBooking);
-            confirmBookingBtn.addEventListener('click', confirmBooking);
-            cancelBookingBtn.addEventListener('click', () => bookingModal.classList.add('hidden'));
-            closeModalBtn.addEventListener('click', () => bookingModal.classList.add('hidden'));
-
-            // Inicia a aplicação na visualização do aluno
-            switchView('aluno');
-        });
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var username = document.getElementById('username').value.trim();
+        var password = document.getElementById('password').value.trim();
+        var termos = document.getElementById('termos').checked;
+        var errorDiv = document.getElementById('loginError');
+        errorDiv.classList.add('hidden');
+        if (!termos) {
+            errorDiv.textContent = 'Você precisa concordar com os Termos de Serviço e Políticas de Privacidade.';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+        if ((username === 'adm' && password === '123')) {
+            window.location.href = 'admin.html';
+        } else if ((username === 'user' && password === '123')) {
+            window.location.href = 'cliente.html';
+        } else {
+            errorDiv.textContent = 'Usuário ou senha inválidos.';
+            errorDiv.classList.remove('hidden');
+        }
+    });
     </script>
-
 </body>
 </html>
